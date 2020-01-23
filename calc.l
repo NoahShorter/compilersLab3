@@ -15,7 +15,7 @@
 #include "lex.h"
 
 #define DO_RETURN(a) return (a)
-yylval_t yylval;
+//yylval_t yylval;
 %}
 
 %option noyywrap

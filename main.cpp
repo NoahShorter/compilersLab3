@@ -1,36 +1,21 @@
-//***********************************************************
-// main.cpp
-// 
-// main routine for calc scanner and parser
+// Main routine for lang compiler.
+// This version only runs the lexer
 //
-// Author: Noah Shorter
-// noah.shorter@oit.edu
+// Author: Phil Howard
+// phil.howard@oit.edu
 //
-//***********************************************************
-
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <iostream>
 #include <fstream>
-#include <string.h>
-#include "cSymbol.h"
 #include "lex.h"
-#include "tokens.h"
+#include "parse.h"
 
-long long cSymbol::nextId = 0;
-
-// Program to test a symbol table implementation
-// Command line arguments:
-//     Input file:  Default = stdin
-//     Output file: Default = stdout
 int main(int argc, char **argv)
 {
     const char *outfile_name;
     int result = 0;
-    int token;
-
-    std::cout << "Noah Shorter" << std::endl;
 
     if (argc > 1)
     {
@@ -43,30 +28,31 @@ int main(int argc, char **argv)
     }
 
     if (argc > 2)
-    {
         outfile_name = argv[2];
+    else
+        outfile_name = "/dev/tty";
 
-        FILE *output = fopen(outfile_name, "w");
-        output = fopen(outfile_name, "w");
-        if (output == nullptr)
-        {
-            std::cerr << "ERROR: Unable to open file " << outfile_name << "\n";
-            exit(-1);
-        }
-
-        // redirect stdout to the output file
-        int output_fd = fileno(output);
-        if (dup2(output_fd, 1) != 1)
-        {
-            std::cerr << "Unable to duplicate the file descriptor\n";
-        }
-    }
-    
-    token = yylex();
-    while(token != 0)
+    FILE *output = fopen(outfile_name, "w");
+    if (output == NULL)
     {
-        std::cout << token << ":" << yytext << "\n";
-        token = yylex();
+        std::cerr << "Unable to open output file " << outfile_name << "\n";
+        exit(-1);
     }
+    int output_fd = fileno(output);
+    if (dup2(output_fd, 1) != 1)
+    {
+        std::cerr << "Unable to duplicate the file descriptor\n";
+    }
+
+    if (FindPROG())
+    {
+        std::cout << "Found a Program\n";
+    }
+
+    if (yylex() != 0)
+    {
+        std::cout << "Junk at end of program\n";
+    }
+
     return result;
 }
