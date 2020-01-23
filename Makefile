@@ -6,7 +6,8 @@
 #
 
 COPTS=-Wall -g -c -O0 -std=c++11
-OBJS=calc.o
+OBJS=main.o \
+     calclex.o \
 
 all: calc
 
@@ -20,6 +21,9 @@ clean:
 
 .cpp.o:
 	g++ $(COPTS) $? -o $@
+
+main.o: main.cpp calclex.c
+	g++ $(COPTS) main.cpp -o main.o
 
 calclex.c: calc.l
 	flex -o calclex.c calc.l

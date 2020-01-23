@@ -15,7 +15,7 @@
 #include "lex.h"
 
 #define DO_RETURN(a) return (a)
-
+yylval_t yylval;
 %}
 
 %option noyywrap
@@ -23,18 +23,19 @@
 %option nounput
 %option yylineno
 
-PUNCTUATION         [();]|"["|"]"
-OP                  [+-*/]
+PUNCTUATION         [-();+*/=]|"["|"]"
 VAR                 [a-zA-Z][a-zA-Z0-9]*
 NUM                 [0-9]+
 WHITESPACE          [ \t\n]+
 
 %%
 
+    // stuff goes here.
+
 {PUNCTUATION}           DO_RETURN(yytext[0]);
-{OP}                    DO_RETURN(yytext[0]); // + = 43, - = 45, * = 42, / = 47
 
 "while"                 DO_RETURN(WHILE);
+"end"                   DO_RETURN(END);
 
 {VAR}                   DO_RETURN(VAR);
 {NUM}                   DO_RETURN(NUM);
