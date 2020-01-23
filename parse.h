@@ -19,3 +19,5 @@ bool FindSTMTS();
 bool FindSTMT();
 bool FindEXPR();
 bool FindOP();
+
+void ErrorResume();

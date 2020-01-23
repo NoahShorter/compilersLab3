@@ -27,6 +27,7 @@ void Error(std::string expecting)
         cout << "Found End-Of-File when expecting a " << expecting;
 
     std::cout << " in line " << yylineno << std::endl;
+
 }
 //*******************************************
 // Read the next token from the input

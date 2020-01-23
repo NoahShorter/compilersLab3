@@ -27,6 +27,7 @@ PUNCTUATION         [-();+*/=]|"["|"]"
 VAR                 [a-zA-Z][a-zA-Z0-9]*
 NUM                 [0-9]+
 WHITESPACE          [ \t\n]+
+JUNK                .
 
 %%
 
@@ -41,6 +42,8 @@ WHITESPACE          [ \t\n]+
 {NUM}                   DO_RETURN(NUM);
 
 {WHITESPACE}            {}
+
+{JUNK}                  {}
 
 %%
 // function definitions go here.
