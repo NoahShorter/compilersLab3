@@ -43,7 +43,7 @@ JUNK                .
 
 {WHITESPACE}            {}
 
-{JUNK}                  {}
+{JUNK}                  DO_RETURN(JUNK);
 
 %%
 // function definitions go here.

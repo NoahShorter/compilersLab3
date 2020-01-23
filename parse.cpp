@@ -45,9 +45,20 @@ bool FindPROG()
 //*******************************************
 bool FindSTMTS()
 {
-    bool loop = true;
-    while(FindSTMT())
+    goodFail = true;
+    while(goodFail)
     {
+        goodFail = true;
+        bool found = FindSTMT();
+        if(found);
+        else if(!found && goodFail)
+            goodFail = false;
+        else
+        {
+            ErrorResume();
+            goodFail = true;
+        }
+
         //cout << "Found a statement\n";
     }
 
@@ -57,30 +68,33 @@ bool FindSTMTS()
 //*******************************************
 bool FindSTMT()
 {
+    goodFail = false;
  //   cout << "IN STMT\n";
     if(PeekToken() == VAR)
     {
      //   cout << "FOUND STMT.VAR\n";
         AdvanceToken();
-        if(PeekToken() != '=') { Error("="); return false; }
+        if(PeekToken() != '=') { Error("'='"); return false; }
         AdvanceToken();
         if(!FindEXPR()) return false;
-        if(PeekToken() != ';') { Error(";"); return false; }
+        if(PeekToken() != ';') { Error("';'"); return false; }
         AdvanceToken();
         cout << "Found a statement\n";
+        goodFail = true;
         return true;
     }
     else if(PeekToken() == WHILE)
     {
    //     cout << "FOUND STMT.WHILE\n";
         AdvanceToken();
-        if(PeekToken() != '(') { Error("("); return false; }
+        if(PeekToken() != '(') { Error("'('"); return false; }
         AdvanceToken();
         if(!FindEXPR()) return false;
-        if(PeekToken() != ')') { Error(")"); return false; }
+        if(PeekToken() != ')') { Error("')'"); return false; }
         AdvanceToken();
         if(!FindSTMT()) return false;
         cout << "Found a statement\n";
+        goodFail = true;
         return true;
     }
     else if(PeekToken() == '[')
@@ -88,26 +102,21 @@ bool FindSTMT()
         AdvanceToken();
  //       cout << "FOUND STMT.[\n";
         if(!FindSTMTS()) return false;
-        if(PeekToken() != ']') { Error("]"); return false; }
+        if(PeekToken() != ']') { Error("']'"); return false; }
         AdvanceToken();
         cout << "Found a statement\n";
+        goodFail = true;
         return true;
     }
     //Error("STMT");
+    goodFail = true;
     return false;
 }
 //*******************************************
 bool FindEXPR()
 {
     //cout << "IN EXPR\n";
-    if(FindOP())
-    {
-     //   cout << "FOUND EXPR.OP\n";
-        if(!FindEXPR()) return false;
-        if(!FindEXPR()) return false;
-        return true;
-    }
-    else if(PeekToken() == NUM)
+    if(PeekToken() == NUM)
     {
    //     cout << "FOUND EXPR.NUM\n";
         AdvanceToken();
@@ -117,6 +126,13 @@ bool FindEXPR()
     {
         AdvanceToken();
  //       cout << "FOUND EXPR.VAR\n";
+        return true;
+    }
+    else if(FindOP())
+    {
+     //   cout << "FOUND EXPR.OP\n";
+        if(!FindEXPR()) return false;
+        if(!FindEXPR()) return false;
         return true;
     }
     Error("EXPR");
@@ -141,7 +157,7 @@ bool FindOP()
 //*******************************************
 void ErrorResume()
 {
-    while(PeekToken() != ';' && PeekToken() != END)
+    while(PeekToken() != ';' && PeekToken() != END && PeekToken() != ']')
         AdvanceToken();
     if(PeekToken() == ';')
         AdvanceToken();
