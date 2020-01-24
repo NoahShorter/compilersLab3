@@ -21,7 +21,6 @@ using std::cout;
 static unordered_set<int> FirstEXAMPLE_1 = {NUM, 'x', 'y'};
 static unordered_set<int> FirstEXAMPLE_2 = {'q', END, 'b'};
 
-bool goodFail;
 
 //*******************************************
 //static bool IsIn(unordered_set<int>& set, int value)
@@ -45,18 +44,17 @@ bool FindPROG()
 //*******************************************
 bool FindSTMTS()
 {
-    goodFail = true;
-    while(goodFail)
+    bool cont = true;
+    while(cont)
     {
-        goodFail = true;
         bool found = FindSTMT();
         if(found);
-        else if(!found && goodFail)
-            goodFail = false;
+        else if(!found && (PeekToken() == ']' || PeekToken() == END))
+            cont = false;
         else
         {
             ErrorResume();
-            goodFail = true;
+            cont = true;
         }
 
         //cout << "Found a statement\n";
@@ -68,7 +66,6 @@ bool FindSTMTS()
 //*******************************************
 bool FindSTMT()
 {
-    goodFail = false;
  //   cout << "IN STMT\n";
     if(PeekToken() == VAR)
     {
@@ -80,7 +77,6 @@ bool FindSTMT()
         if(PeekToken() != ';') { Error("';'"); return false; }
         AdvanceToken();
         cout << "Found a statement\n";
-        goodFail = true;
         return true;
     }
     else if(PeekToken() == WHILE)
@@ -94,7 +90,6 @@ bool FindSTMT()
         AdvanceToken();
         if(!FindSTMT()) return false;
         cout << "Found a statement\n";
-        goodFail = true;
         return true;
     }
     else if(PeekToken() == '[')
@@ -102,14 +97,13 @@ bool FindSTMT()
         AdvanceToken();
  //       cout << "FOUND STMT.[\n";
         if(!FindSTMTS()) return false;
+        AdvanceToken();
         if(PeekToken() != ']') { Error("']'"); return false; }
         AdvanceToken();
         cout << "Found a statement\n";
-        goodFail = true;
         return true;
     }
     //Error("STMT");
-    goodFail = true;
     return false;
 }
 //*******************************************

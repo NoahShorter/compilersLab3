@@ -26,6 +26,7 @@
 PUNCTUATION         [-();+*/=]|"["|"]"
 VAR                 [a-zA-Z][a-zA-Z0-9]*
 NUM                 [0-9]+
+COMMENTS            "{"[^}\n]*"}"
 WHITESPACE          [ \t\n]+
 JUNK                .
 
@@ -33,6 +34,7 @@ JUNK                .
 
     // stuff goes here.
 
+{COMMENTS}              {}
 {PUNCTUATION}           DO_RETURN(yytext[0]);
 
 "while"                 DO_RETURN(WHILE);
