@@ -49,8 +49,12 @@ bool FindSTMTS()
     {
         bool found = FindSTMT();
         if(found);
-        else if(!found && (PeekToken() == ']' || PeekToken() == END))
+        else if(PeekToken() == END)
             cont = false;
+        else if(PeekToken() == ']')
+        {
+            cont = false;
+        }
         else
         {
             ErrorResume();
@@ -97,13 +101,13 @@ bool FindSTMT()
         AdvanceToken();
  //       cout << "FOUND STMT.[\n";
         if(!FindSTMTS()) return false;
-        AdvanceToken();
         if(PeekToken() != ']') { Error("']'"); return false; }
         AdvanceToken();
         cout << "Found a statement\n";
         return true;
     }
-    //Error("STMT");
+    if(PeekToken() != END && PeekToken() != 0 && PeekToken() != ']')
+        Error("STMT");
     return false;
 }
 //*******************************************
