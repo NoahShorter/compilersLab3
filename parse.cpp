@@ -6,6 +6,8 @@
 //
 // Author: Phil Howard 
 // phil.howard@oit.edu
+// Edited by: Noah Shorter
+// noah.shorter@oit.edu
 //
 
 #include <iostream>
@@ -38,7 +40,6 @@ bool FindPROG()
     if(!FindSTMTS()) return false;
     if(PeekToken() != END) { Error("end"); return false; }
     AdvanceToken();
- //   cout << "FOUND PROG\n";
     return true;
 }
 //*******************************************
@@ -60,20 +61,15 @@ bool FindSTMTS()
             ErrorResume();
             cont = true;
         }
-
-        //cout << "Found a statement\n";
     }
 
- //   cout << "FOUND STMTS\n";
     return true;
 }
 //*******************************************
 bool FindSTMT()
 {
- //   cout << "IN STMT\n";
     if(PeekToken() == VAR)
     {
-     //   cout << "FOUND STMT.VAR\n";
         AdvanceToken();
         if(PeekToken() != '=') { Error("'='"); return false; }
         AdvanceToken();
@@ -85,7 +81,6 @@ bool FindSTMT()
     }
     else if(PeekToken() == WHILE)
     {
-   //     cout << "FOUND STMT.WHILE\n";
         AdvanceToken();
         if(PeekToken() != '(') { Error("'('"); return false; }
         AdvanceToken();
@@ -99,7 +94,6 @@ bool FindSTMT()
     else if(PeekToken() == '[')
     {
         AdvanceToken();
- //       cout << "FOUND STMT.[\n";
         if(!FindSTMTS()) return false;
         if(PeekToken() != ']') { Error("']'"); return false; }
         AdvanceToken();
@@ -113,22 +107,18 @@ bool FindSTMT()
 //*******************************************
 bool FindEXPR()
 {
-    //cout << "IN EXPR\n";
     if(PeekToken() == NUM)
     {
-   //     cout << "FOUND EXPR.NUM\n";
         AdvanceToken();
         return true;
     }
     else if(PeekToken() == VAR)
     {
         AdvanceToken();
- //       cout << "FOUND EXPR.VAR\n";
         return true;
     }
     else if(FindOP())
     {
-     //   cout << "FOUND EXPR.OP\n";
         if(!FindEXPR()) return false;
         if(!FindEXPR()) return false;
         return true;
@@ -139,7 +129,6 @@ bool FindEXPR()
 //*******************************************
 bool FindOP()
 {
-    //cout << "IN OP\n";
     int token = PeekToken();
     if(token ==  '+' || 
             token == '-' || 
@@ -147,7 +136,6 @@ bool FindOP()
             token == '/' )
     {
         AdvanceToken();
-        //cout << "FOUND OP\n";
         return true;
     }
     return false;
