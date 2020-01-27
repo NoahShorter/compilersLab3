@@ -43,24 +43,33 @@ bool FindPROG()
     return true;
 }
 //*******************************************
+// Find a series of statements
+//*******************************************
 bool FindSTMTS()
 {
     bool cont = true;
     while(cont)
     {
         bool found = FindSTMT();
+
+        // If there was a statement, continue
         if(found);
+
+        // Is the file point to the END variable? if so, stop looking.
         else if(PeekToken() == END)
             cont = false;
+
+        // Are you at the end of a [STMTS] If so, stop looking.
         else if(PeekToken() == ']')
-        {
             cont = false;
-        }
+
+        // Are you at the EOF, if so stop looking.
+        else if(PeekToken() == 0)
+            cont = false;
+
+        // If your not at the end of the program or [STMTS] then error occured.
         else
-        {
             ErrorResume();
-            cont = true;
-        }
     }
 
     return true;
@@ -68,6 +77,7 @@ bool FindSTMTS()
 //*******************************************
 bool FindSTMT()
 {
+    // Look for a VAR = EXPR;
     if(PeekToken() == VAR)
     {
         AdvanceToken();
@@ -79,6 +89,7 @@ bool FindSTMT()
         cout << "Found a statement\n";
         return true;
     }
+    // Look for a while (EXPR) STMT
     else if(PeekToken() == WHILE)
     {
         AdvanceToken();
@@ -91,6 +102,7 @@ bool FindSTMT()
         cout << "Found a statement\n";
         return true;
     }
+    // Look for a [STMTS]
     else if(PeekToken() == '[')
     {
         AdvanceToken();
@@ -100,32 +112,45 @@ bool FindSTMT()
         cout << "Found a statement\n";
         return true;
     }
+    // If your not at the function END, EOF, or end of [STMTS] then show error.
     if(PeekToken() != END && PeekToken() != 0 && PeekToken() != ']')
         Error("STMT");
+
     return false;
 }
 //*******************************************
+// Find an EXPR
+//*******************************************
 bool FindEXPR()
 {
+    // Check for NUM
     if(PeekToken() == NUM)
     {
         AdvanceToken();
         return true;
     }
+
+    // Check for VAR
     else if(PeekToken() == VAR)
     {
         AdvanceToken();
         return true;
     }
+
+    //Check for OP EXPR EXPR
     else if(FindOP())
     {
         if(!FindEXPR()) return false;
         if(!FindEXPR()) return false;
         return true;
     }
+
+    // If EXPR not found, show error.
     Error("EXPR");
     return false;
 }
+//*******************************************
+// Look for a +, -, *, /
 //*******************************************
 bool FindOP()
 {
@@ -140,6 +165,9 @@ bool FindOP()
     }
     return false;
 }
+//*******************************************
+// If error found, continue until you find,
+// ; or ] or END token
 //*******************************************
 void ErrorResume()
 {
